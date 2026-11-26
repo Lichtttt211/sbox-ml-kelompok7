@@ -1,7 +1,7 @@
 """AES-128 dari nol (T-table, FIPS-197) dengan S-box fleksibel, CBC dua arah dengan
 domain-separated IV, dan pengujian lengkap keamanan enkripsi citra.
 
-Proyek Akhir Kriptografi — Kelompok 7 — Ilmu Komputer UNNES 2026.
+Proyek Akhir Kriptografi — Kelompok 7 
 
 Catatan kriptografi:
 - S-box aktif dipasang pada SubBytes/InvSubBytes dan Key Expansion (SubWord).
