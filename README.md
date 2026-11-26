@@ -1,7 +1,6 @@
 # Konstruksi S-box AES Berbasis Surrogate-Assisted Genetic Algorithm (SAGA) untuk Enkripsi Citra
 
 **Proyek Akhir Mata Kuliah Kriptografi — Kelompok 7**  
-Departemen Ilmu Komputer, Universitas Negeri Semarang (UNNES), 2026
 
 ## Anggota Kelompok 7
 
