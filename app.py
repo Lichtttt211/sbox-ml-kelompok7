@@ -1,6 +1,6 @@
 """Aplikasi Web Streamlit — Konstruksi S-box AES Berbasis SAGA untuk Enkripsi Citra.
 
-Proyek Akhir Kriptografi — Kelompok 7 — Ilmu Komputer UNNES 2026:
+Proyek Akhir Kriptografi — Kelompok 7:
   - Cahya Din Ramadhan (2404130018)
   - Muhammad Nabil Fikri (2404130167)
   - Fathan Nabil Rahman (2404130140)
