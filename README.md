@@ -46,26 +46,6 @@ Menindaklanjuti saran *future research* Alamsyah dkk. (2025) yang mengusulkan pe
 - `mandrill.png` — Citra uji standar $512 \times 512$ RGB.
 - `requirements.txt` & `.streamlit/config.toml` — Konfigurasi dependensi dan tema Streamlit.
 
-## Menjalankan Secara Lokal
-
-```bash
-pip install -r requirements.txt
-streamlit run app.py
-```
-
-## Deploy ke Streamlit Community Cloud (Gratis)
-
-1. Buat repository GitHub baru, misalnya `sbox-ml-kelompok7`.
-2. Unggah seluruh isi folder ini (`app.py`, `sbox_core.py`, `aes_core.py`, `mandrill.png`, `requirements.txt`, `README.md`, dan folder `.streamlit/`).
-3. Buka [https://share.streamlit.io](https://share.streamlit.io), login dengan akun GitHub, klik **Create app**.
-4. Pilih repository `sbox-ml-kelompok7`, branch `main`, dan main file `app.py`, lalu klik **Deploy**.
-5. Setelah aktif, tautan aplikasi (`https://sbox-ml-kelompok7.streamlit.app`) siap dimasukkan ke laporan PDF dan Google Form.
-
-## Menjalankan di Google Colab
-
-1. Unggah `Kelompok_7_Proyek_Akhir_Kriptografi.ipynb` ke Google Drive / Google Colab.
-2. (Opsional) Unggah `mandrill.png` ke direktori kerja Colab — jika tidak diunggah, notebook otomatis mengunduh citra Mandrill/Baboon standar $512 \times 512$ RGB.
-3. Klik **Runtime → Run all**; seluruh sel dirancang berurutan tanpa ketergantungan mundur.
 
 ## Referensi
 
