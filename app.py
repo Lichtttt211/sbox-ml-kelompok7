@@ -219,7 +219,7 @@ def plot_correlation_scatter(plain: np.ndarray, cipher: np.ndarray):
 
 # ---------------- Sidebar: Navigasi, Identitas & Pilih S-box ----------------
 st.sidebar.title("🔐 S-box K7 · SAGA")
-st.sidebar.caption("Proyek Akhir Kriptografi · **Kelompok 7** · Ilmu Komputer UNNES 2026")
+st.sidebar.caption("Proyek Akhir Kriptografi · **Kelompok 7**")
 
 halaman = st.sidebar.radio(
     "Navigasi Halaman",
@@ -270,7 +270,7 @@ with st.sidebar.expander("Anggota Kelompok 7", expanded=False):
 # ---------------- Halaman 1: Beranda ----------------
 if halaman == "Beranda":
     st.title("Konstruksi S-box AES Berbasis Surrogate-Assisted Genetic Algorithm (SAGA) untuk Enkripsi Citra")
-    st.caption("Proyek Akhir Mata Kuliah Kriptografi · **Kelompok 7** · Departemen Ilmu Komputer, Universitas Negeri Semarang (2026)")
+    st.caption("Proyek Akhir Mata Kuliah Kriptografi · **Kelompok 7**")
 
     st.markdown(
         """
@@ -307,7 +307,7 @@ menggunakan S-box hasil optimasi **Machine Learning + Algoritma Genetik (SAGA)**
     df_cmp = comparison_table_cached(tuple(int(v) for v in st.session_state["saga_sbox"]) if "saga_sbox" in st.session_state else None)
     st.dataframe(df_cmp, hide_index=True, use_container_width=True)
 
-    st.subheader("Tim Pengembang — Kelompok 7 (Ilmu Komputer UNNES)")
+    st.subheader("Tim Pengembang — Kelompok 7")
     st.dataframe(
         pd.DataFrame(ANGGOTA, columns=["Nama Lengkap", "NIM", "Kontribusi Utama"]),
         hide_index=True,
