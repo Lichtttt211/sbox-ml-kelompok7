@@ -29,22 +29,38 @@ st.set_page_config(
     layout="wide",
 )
 
-# CSS ringan untuk mencegah pemotongan angka metrik dan memperjelas kartu ringkasan
+# CSS ringan untuk mencegah pemotongan angka/label metrik dan memperjelas kartu ringkasan
 st.markdown(
     """
     <style>
     [data-testid="stMetricValue"] {
-        font-size: 1.35rem !important;
+        font-size: 1.18rem !important;
         white-space: nowrap;
     }
     [data-testid="stMetricLabel"] {
-        font-size: 0.85rem !important;
+        font-size: 0.82rem !important;
+    }
+    [data-testid="stMetricLabel"] > div {
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
     }
     div[data-testid="metric-container"] {
         background-color: #F8FAFC;
         border: 1px solid #E2E8F0;
         border-radius: 10px;
-        padding: 10px 14px;
+        padding: 10px 12px;
+    }
+    .fips-badge {
+        display: inline-block;
+        background-color: #DCFCE7;
+        color: #166534;
+        border: 1px solid #86EFAC;
+        border-radius: 999px;
+        padding: 2px 10px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        margin-left: 6px;
     }
     </style>
     """,
@@ -283,9 +299,9 @@ menggunakan S-box hasil optimasi **Machine Learning + Algoritma Genetik (SAGA)**
 
     r2 = st.columns(4)
     r2[0].metric("Deviasi BIC-SAC", f"{m['Deviasi BIC-SAC']:.5f}", help="Rata-rata |B_jk - 0.5|, makin kecil makin baik")
-    r2[1].metric("LAP (Bias) / DAP", f"{m['LAP (bias)']:.4f} / {m['DAP']:.6f}", help="Makin kecil makin tahan serangan linear & diferensial")
-    r2[2].metric("Skor S / SV (2025)", f"{m['Skor S (2025)']:.5f} / {m['Skor SV (2025)']:.5f}", help="Metrik gabungan Alamsyah dkk. (2025): ideal S=0, SV min=16")
-    r2[3].metric("FP / OFP / Siklus", f"{m['FP']} / {m['OFP']} / {m['Siklus']}", help="Fixed Point, Opposite Fixed Point, Jumlah Siklus (Panjang Maks)")
+    r2[1].metric("LAP / DAP", f"{m['LAP (bias)']:.4f} / {m['DAP']:.4f}", help=f"LAP bias = {m['LAP (bias)']:.6f} | DAP = {m['DAP']:.6f}")
+    r2[2].metric("Skor S / SV", f"{m['Skor S (2025)']:.4f} / {m['Skor SV (2025)']:.3f}", help=f"Alamsyah dkk. (2025): S = {m['Skor S (2025)']:.5f} (ideal 0), SV = {m['Skor SV (2025)']:.5f} (min 16)")
+    r2[3].metric("FP / OFP · Siklus", f"{m['FP']} / {m['OFP']} · {m['Siklus']}", help="Fixed Point, Opposite Fixed Point, Jumlah Siklus (Panjang Maks)")
 
     st.subheader("Perbandingan Singkat: S-box K7 vs Referensi Utama")
     df_cmp = comparison_table_cached(tuple(int(v) for v in st.session_state["saga_sbox"]) if "saga_sbox" in st.session_state else None)
@@ -379,10 +395,10 @@ elif halaman == "Konstruksi S-box (ML + GA)":
         cache_note = " (dari cache)" if st.session_state.get("saga_cached") else ""
 
         c = st.columns(4)
-        c[0].metric("Kandidat / Invertible", f"{r['n_kandidat']:,} / {r['n_dataset']:,}".replace(",", "."))
-        c[1].metric("Polinomial Terpilih", r["poly_hex"], help=r["poly_str"])
-        c[2].metric("Konstanta C Optimal", f"{r['c_opt']['c_hex']} ({r['c_opt']['c_int']})", help=f"Siklus: {r['c_opt']['cycles']}")
-        c[3].metric(f"Waktu Komputasi{cache_note}", f"{r['elapsed']:.2f} dtk")
+        c[0].metric("Matriks Invertible", f"{r['n_dataset']:,}".replace(",", "."), help=f"Lolos rank GF(2)=8 dari {r['n_kandidat']:,} kandidat 8×8 citra".replace(",", "."))
+        c[1].metric("Polinomial", r["poly_hex"], help=r["poly_str"])
+        c[2].metric("Konstanta C", f"{r['c_opt']['c_hex']} ({r['c_opt']['c_int']})", help=f"FP=0, OFP=0, Siklus={r['c_opt']['cycles']}")
+        c[3].metric(f"Waktu{cache_note}", f"{r['elapsed']:.2f} dtk")
 
         st.subheader("Ablasi & Evaluasi Model Machine Learning (Data Uji 20%)")
         df_eval = pd.DataFrame(r["evaluasi"], columns=["Model ML", "Target Prediksi", "R² (Uji)", "MAE (Uji)"])
@@ -445,8 +461,8 @@ elif halaman == "Konstruksi S-box (ML + GA)":
             st.dataframe(sbox_df(r["sbox"]), height=420, use_container_width=True)
 
         d1, d2, d3 = st.columns(3)
-        d1.download_button("Unduh S-box (.txt)", format_sbox_txt(r["sbox"]), "sbox_k7.txt", "text/plain")
-        d2.download_button("Unduh S-box (.csv)", sbox_df(r["sbox"]).to_csv(), "sbox_k7.csv", "text/csv")
+        d1.download_button("Unduh S-box (.txt)", format_sbox_txt(r["sbox"]), "sbox_k7.txt", "text/plain", use_container_width=True)
+        d2.download_button("Unduh S-box (.csv)", sbox_df(r["sbox"]).to_csv(), "sbox_k7.csv", "text/csv", use_container_width=True)
         meta_json = json.dumps({
             "kelompok": "Kelompok 7 - Ilmu Komputer UNNES 2026",
             "polynomial_hex": r["poly_hex"],
@@ -456,7 +472,7 @@ elif halaman == "Konstruksi S-box (ML + GA)":
             "metrics": m_new,
             "sbox": [int(v) for v in r["sbox"]],
         }, indent=2)
-        d3.download_button("Unduh Metadata Lengkap (.json)", meta_json, "sbox_k7_metadata.json", "application/json")
+        d3.download_button("Unduh Metadata (.json)", meta_json, "sbox_k7_metadata.json", "application/json", use_container_width=True)
 
 
 # ---------------- Halaman 3: Uji & Perbandingan S-box ----------------
@@ -482,7 +498,7 @@ elif halaman == "Uji & Perbandingan S-box":
     g1 = st.columns(4)
     g1[0].metric("Balance", m["Balance"], help="Tiap bit keluaran wajib 128 bit 0 dan 128 bit 1")
     g1[1].metric("Bijective", m["Bijective"], help="Seluruh 256 nilai 0..255 muncul unik")
-    g1[2].metric("NL (Min / 255 Komp.)", f"{det['nl']['min']} / {det['nl']['min_komponen']}", help="Ideal: 112")
+    g1[2].metric("NL (Min / Komp.)", f"{det['nl']['min']} / {det['nl']['min_komponen']}", help="NL per bit dan min dari 255 fungsi komponen (ideal 112)")
     g1[3].metric("BIC-NL (Min)", f"{det['bic']['nl_min']}", help="Ideal: 112")
 
     g2 = st.columns(4)
@@ -494,8 +510,8 @@ elif halaman == "Uji & Perbandingan S-box":
     g3 = st.columns(4)
     g3[0].metric("LAP (Bias)", f"{det['lap']['bias']:.6f}", help=f"Probabilitas maks: {det['lap']['prob']:.4f} (korelasi maks {det['lap']['max_corr']})")
     g3[1].metric("DAP", f"{det['dap']['dap']:.6f}", help=f"Maks {det['dap']['max_count']}/256 di Δx={det['dap']['dx']}, Δy={det['dap']['dy']}")
-    g3[2].metric("Skor S / SV (2025)", f"{m['Skor S (2025)']:.5f} / {m['Skor SV (2025)']:.5f}", help="Rumus Alamsyah dkk. (2025) Pers. 9 & 20")
-    g3[3].metric("FP / OFP / Siklus", f"{det['fp']['fp']} / {det['fp']['ofp']} / {m['Siklus']}", help=f"Panjang siklus: {det['cycles']}")
+    g3[2].metric("Skor S / SV", f"{m['Skor S (2025)']:.4f} / {m['Skor SV (2025)']:.3f}", help=f"Alamsyah dkk. (2025) Pers. 9 & 20: S = {m['Skor S (2025)']:.5f}, SV = {m['Skor SV (2025)']:.5f}")
+    g3[3].metric("FP / OFP · Siklus", f"{det['fp']['fp']} / {det['fp']['ofp']} · {m['Siklus']}", help=f"Panjang siklus: {det['cycles']}")
 
     t1, t2, t3, t4, t5 = st.tabs(["Balance & NL", "Matriks SAC", "BIC-NL & BIC-SAC", "LAT (LAP) & DDT (DAP)", "Perbandingan"])
     with t1:
@@ -560,20 +576,39 @@ elif halaman == "Uji & Perbandingan S-box":
         df_cmp = comparison_table_cached(tuple(int(v) for v in st.session_state["saga_sbox"]) if "saga_sbox" in st.session_state else None)
         st.dataframe(df_cmp, hide_index=True, use_container_width=True)
 
-        fig_cmp, axes = plt.subplots(1, 3, figsize=(11.0, 3.6))
-        labels = [s.split(" (")[0] + ("\n" + s.split(" (")[1][:-1] if " (" in s else "") for s in df_cmp["S-box"]]
-        colors = ["#0f766e" if "K7" in s else "#94a3b8" for s in df_cmp["S-box"]]
+        def _short_label(name: str) -> str:
+            if "K7" in name:
+                return "S-box K7"
+            if "AES Standar" in name:
+                return "AES Std"
+            if "2025" in name:
+                return "Alamsyah '25"
+            if "A0" in name:
+                return "A0 ('23)"
+            if "A2" in name:
+                return "A2 ('23)"
+            if "A1" in name:
+                return "A1 ('23)"
+            if "SAGA Sesi" in name:
+                return "SAGA Sesi"
+            return name[:12]
+
+        fig_cmp, axes = plt.subplots(1, 3, figsize=(12.2, 4.0))
+        labels = [_short_label(s) for s in df_cmp["S-box"]]
+        colors = ["#0f766e" if ("K7" in s or "SAGA Sesi" in s) else "#94a3b8" for s in df_cmp["S-box"]]
         for ax, col_name, ttl in [
             (axes[0], "Deviasi SAC", "Deviasi SAC (makin kecil makin baik)"),
             (axes[1], "Deviasi BIC-SAC", "Deviasi BIC-SAC (makin kecil makin baik)"),
             (axes[2], "Skor S (2025)", "Skor S Alamsyah 2025 (ideal = 0)"),
         ]:
-            bars = ax.bar(range(len(labels)), df_cmp[col_name], color=colors)
+            bars = ax.bar(range(len(labels)), df_cmp[col_name], color=colors, width=0.65)
             ax.set_xticks(range(len(labels)))
-            ax.set_xticklabels(labels, fontsize=7, rotation=18, ha="right")
-            ax.set_title(ttl, fontsize=9)
-            ax.bar_label(bars, fmt="%.4f", fontsize=7.5)
-        fig_cmp.tight_layout()
+            ax.set_xticklabels(labels, fontsize=8, rotation=28, ha="right")
+            ax.set_title(ttl, fontsize=9.5, pad=8)
+            ax.set_ylim(0, max(float(df_cmp[col_name].max()) * 1.18, 0.001))
+            ax.bar_label(bars, fmt="%.4f", fontsize=7.5, padding=2)
+            ax.grid(axis="y", alpha=0.25)
+        fig_cmp.tight_layout(w_pad=2.2)
         st.pyplot(fig_cmp)
         plt.close(fig_cmp)
         st.caption(
@@ -585,8 +620,14 @@ elif halaman == "Uji & Perbandingan S-box":
 # ---------------- Halaman 4: Enkripsi & Uji Citra (AES-128) ----------------
 else:
     st.title("Enkripsi & Evaluasi Keamanan Citra dengan AES-128")
-    fips_badge = "✔ Lolos Vektor Uji Resmi FIPS-197 Appendix C.1" if fips_ok_cached() else "✘ Gagal FIPS-197"
-    st.caption(f"S-box aktif: **{pilihan}** · SubBytes & KeyExpansion memakai S-box aktif · MixColumns GF(2⁸) 0x11B · {fips_badge}")
+    if fips_ok_cached():
+        st.markdown(
+            f"S-box aktif: **{pilihan}** · SubBytes & KeyExpansion memakai S-box aktif · MixColumns GF(2⁸) `0x11B` "
+            '<span class="fips-badge">✔ Lolos FIPS-197 Appendix C.1</span>',
+            unsafe_allow_html=True,
+        )
+    else:
+        st.error("Implementasi AES-128 gagal vektor uji FIPS-197 Appendix C.1.")
 
     col_a, col_b = st.columns([1.0, 1.1])
     with col_a:
@@ -727,8 +768,8 @@ else:
             px = int(col_p[1].number_input("Kolom piksel", 0, w_im - 1, 0))
             ch_sel = col_p[2].selectbox("Kanal yang diubah (+1 mod 256)", ["R", "G", "B"])
 
-            b_col = st.columns(2)
-            if b_col[0].button("Hitung NPCR & UACI (1 Posisi)"):
+            b_col = st.columns([1.0, 1.35])
+            if b_col[0].button("Hitung NPCR & UACI (1 Posisi)", use_container_width=True):
                 im2 = im_plain.copy()
                 k_ch = "RGB".index(ch_sel)
                 im2[py, px, k_ch] = (int(im2[py, px, k_ch]) + 1) % 256
@@ -755,7 +796,7 @@ else:
                 }
                 st.dataframe(df_nu.round(4), hide_index=True, use_container_width=True)
 
-            if b_col[1].button("Jalankan Uji Lengkap (5 Posisi Wu + Kunci 1-Bit + ECB)"):
+            if b_col[1].button("Uji Lengkap (5 Posisi Wu + Kunci 1-Bit + ECB)", use_container_width=True):
                 positions = [
                     (0, 0, 0),
                     (h_im // 4, (3 * w_im) // 4, 1),
